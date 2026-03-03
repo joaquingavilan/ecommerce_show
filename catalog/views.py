@@ -12,6 +12,9 @@ import urllib.parse
 @require_POST
 def demo_auto_login(request):
     user = User.objects.filter(is_superuser=True).first()
+    if not user:
+        user = User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+    
     if user:
         login(request, user)
         return redirect('dashboard_home')
