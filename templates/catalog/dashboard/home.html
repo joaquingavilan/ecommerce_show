@@ -50,22 +50,26 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Producto
                     </th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Precio
                     </th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Estado
                     </th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
                     </th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 {% for product in recent_products %}
-                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                <tr class="hover:bg-gray-50 transition-colors duration-150 group">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
@@ -74,32 +78,47 @@
                                 {% endif %}
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">{{ product.title }}</div>
-                                <div class="text-xs text-gray-500">{{ product.slug }}</div>
+                                <div class="text-xs font-semibold text-indigo-600 mb-0.5 uppercase tracking-wide">{{
+                                    product.category.name }}</div>
+                                <div class="text-sm font-bold text-gray-900 leading-tight">{{ product.title }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span
-                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                            {{ product.category.name }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
                         Gs. {{ product.price|intcomma }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {% if product.available %}
                         <span
-                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">
+                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800">
                             Disponible
                         </span>
                         {% else %}
                         <span
-                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                            Agotado
+                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-gray-200 bg-gray-100 text-gray-600">
+                            No Visible
                         </span>
                         {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <button hx-get="{% url 'product_edit' product.pk %}" hx-target="#modal-container"
+                                class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 p-2 rounded-lg transition-colors flex items-center"
+                                title="Modificar">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </button>
+                            <button hx-get="{% url 'product_delete' product.pk %}" hx-target="#modal-container"
+                                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors flex items-center"
+                                title="Eliminar">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
