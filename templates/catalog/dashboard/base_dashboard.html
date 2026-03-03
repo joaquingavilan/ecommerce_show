@@ -34,169 +34,54 @@
     </script>
 </head>
 
-<body class="bg-gray-50 flex h-screen overflow-hidden font-sans">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased pb-20">
 
-    <!-- Mobile Sidebar (Overlay) -->
-    <div id="mobile-sidebar"
-        class="hidden fixed inset-0 z-40 md:hidden bg-gray-900/50 backdrop-blur-sm transition-opacity">
-        <aside class="w-64 bg-dark text-white h-full flex flex-col shadow-xl">
-            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white tracking-wider">
-                    Ejemplo<span class="text-primary">Store</span>
-                </h1>
-                <button onclick="document.getElementById('mobile-sidebar').classList.add('hidden')"
-                    class="text-gray-400 hover:text-white">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <!-- Duplicate nav links for mobile -->
-            <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
-                <a href="{% url 'dashboard_home' %}"
-                    class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'dashboard_home' %}bg-gray-800 text-white shadow-md{% endif %}">
-                    <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg> Vista General
-                </a>
-                <a href="{% url 'manage_products' %}"
-                    class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'manage_products' %}bg-gray-800 text-white shadow-md{% endif %}">
-                    <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg> Productos
-                </a>
-                <a href="{% url 'manage_categories' %}"
-                    class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'manage_categories' %}bg-gray-800 text-white shadow-md{% endif %}">
-                    <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg> Categorías
-                </a>
-            </nav>
-            <div class="px-4 py-6 border-t border-gray-800 space-y-4">
-                <a href="{% url 'store_front' %}" target="_blank"
-                    class="flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                    <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg> Ver Tienda
-                </a>
-                <form method="post" action="{% url 'dashboard_logout' %}" class="w-full">
-                    {% csrf_token %}
-                    <button type="submit"
-                        class="flex w-full items-center text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
-                        <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 glass mb-8 border-b border-gray-200 bg-white/70 backdrop-blur-lg shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center space-x-4">
+                    <a href="{% url 'dashboard_home' %}"
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-400">
+                        Tu<span class="text-dark">Tienda</span>
+                    </a>
+                </div>
+
+                <!-- Right Side (Toggle Buttons) -->
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'store_front' %}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
+                        <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg> Cerrar Sesión
-                    </button>
-                </form>
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Vista de cliente
+                    </a>
+                </div>
             </div>
-        </aside>
-    </div>
-
-    <!-- Sidebar (Desktop) -->
-    <aside class="w-64 bg-dark text-white hidden md:flex flex-col">
-        <div class="p-6 border-b border-gray-800">
-            <h1 class="text-2xl font-bold text-white tracking-wider">
-                Ejemplo<span class="text-primary">Store</span>
-            </h1>
         </div>
-
-        <nav class="flex-1 px-4 py-8 space-y-2">
-            <a href="{% url 'dashboard_home' %}"
-                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'dashboard_home' %}bg-gray-800 text-white shadow-md{% endif %}">
-                <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-                Vista General
-            </a>
-
-            <a href="{% url 'manage_products' %}"
-                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'manage_products' %}bg-gray-800 text-white shadow-md{% endif %}">
-                <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                Productos
-            </a>
-
-            <a href="{% url 'manage_categories' %}"
-                class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {% if request.resolver_match.url_name == 'manage_categories' %}bg-gray-800 text-white shadow-md{% endif %}">
-                <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                Categorías
-            </a>
-
-        </nav>
-
-        <div class="px-4 py-6 border-t border-gray-800 space-y-4">
-            <a href="{% url 'store_front' %}" target="_blank"
-                class="flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-                Ver Tienda
-            </a>
-
-            <form method="post" action="{% url 'dashboard_logout' %}" class="w-full">
-                {% csrf_token %}
-                <button type="submit"
-                    class="flex w-full items-center text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
-                    <svg class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Cerrar Sesión
-                </button>
-            </form>
-        </div>
-    </aside>
+    </nav>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Top header -->
-        <header
-            class="bg-white border-b border-gray-200 min-h-16 py-3 flex flex-wrap items-center justify-between px-4 sm:px-6 gap-3">
-            <div class="flex items-center">
-                <!-- Mobile Sidebar Toggle Placeholder -->
-                <button class="md:hidden mr-3 text-gray-500 hover:text-gray-700"
-                    onclick="document.getElementById('mobile-sidebar').classList.toggle('hidden')">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <h2 class="text-lg sm:text-xl font-semibold text-gray-800 line-clamp-1">
-                    {% block header %}Dashboard{% endblock %}
-                </h2>
-            </div>
-            <div class="flex items-center">
-                <a href="{% url 'store_front' %}" target="_blank"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
-                    <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    Vista de cliente
-                </a>
-            </div>
-        </header>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+        {% if request.resolver_match.url_name != 'dashboard_home' %}
+        <div class="mb-6">
+            <a href="{% url 'dashboard_home' %}"
+                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-full shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                <svg class="mr-2 w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Volver al panel
+            </a>
+        </div>
+        {% endif %}
 
-        <!-- Main Workspace -->
-        <main class="flex-1 overflow-auto bg-gray-50 pb-8 px-6 pt-6">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
+        {% block content %}{% endblock %}
+    </main>
 
 </body>
 

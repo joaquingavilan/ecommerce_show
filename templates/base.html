@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tienda{% endblock %} - Ejemplo Store</title>
+    <title>{% block title %}Tienda{% endblock %} - TuTienda</title>
     <!-- Tailwind CSS (CDN for quick setup and premium aesthetics) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -57,7 +57,7 @@
                 <div class="flex-shrink-0 flex items-center space-x-4">
                     <a href="{% url 'store_front' %}"
                         class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-400">
-                        Ejemplo<span class="text-dark">Store</span>
+                        Tu<span class="text-dark">Tienda</span>
                     </a>
                     {% if not user.is_authenticated %}
                     <form method="post" action="{% url 'demo_auto_login' %}">
