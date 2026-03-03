@@ -69,12 +69,15 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 {% for product in recent_products %}
-                <tr class="hover:bg-gray-50 transition-colors duration-150 group">
+                <tr class="hover:bg-gray-50 transition-colors group">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
+                            <div class="h-10 w-10 flex-shrink-0">
                                 {% if product.image_url %}
-                                <img class="h-10 w-10 object-cover" src="{{ product.image_url }}" alt="">
+                                <img class="h-10 w-10 rounded-lg object-cover border border-gray-100 shadow-sm"
+                                    src="{{ product.image_url }}" alt="{{ product.title }}">
+                                {% else %}
+                                <div class="h-10 w-10 bg-gray-100 rounded-lg border border-gray-100 shadow-sm"></div>
                                 {% endif %}
                             </div>
                             <div class="ml-4">
@@ -84,18 +87,18 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
-                        Gs. {{ product.price|intcomma }}
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-bold text-gray-900">Gs. {{ product.price|intcomma }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {% if product.available %}
                         <span
-                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800">
+                            class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
                             Disponible
                         </span>
                         {% else %}
                         <span
-                            class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-gray-200 bg-gray-100 text-gray-600">
+                            class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
                             No Visible
                         </span>
                         {% endif %}
