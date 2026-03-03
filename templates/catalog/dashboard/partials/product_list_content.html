@@ -1,0 +1,70 @@
+{% load humanize %}
+{% for product in products %}
+<tr class="hover:bg-gray-50 transition-colors group">
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+            <div class="h-10 w-10 flex-shrink-0">
+                <img class="h-10 w-10 rounded-lg object-cover border border-gray-100 shadow-sm"
+                    src="{{ product.image_url }}" alt="{{ product.title }}">
+            </div>
+            <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">{{ product.title }}</div>
+                <div class="text-xs text-gray-500 italic block hidden md:block">/{{ product.slug }}</div>
+            </div>
+        </div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm text-gray-900">{{ product.category.name }}</div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm font-bold text-gray-900">Gs. {{ product.price|intcomma }}</div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+        {% if product.available %}
+        <span
+            class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+            Disponible
+        </span>
+        {% else %}
+        <span
+            class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
+            No Visible
+        </span>
+        {% endif %}
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {{ product.created|date:"d M Y" }}
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div class="flex justify-end space-x-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button hx-get="{% url 'product_edit' product.pk %}" hx-target="#modal-container"
+                class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 p-2 rounded-lg transition-colors"
+                title="Editar">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+            </button>
+            <button hx-get="{% url 'product_delete' product.pk %}" hx-target="#modal-container"
+                class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors"
+                title="Eliminar">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+        </div>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" class="px-6 py-12 text-center text-gray-500 bg-gray-50/50 rounded-b-xl">
+        <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+        <span class="block font-medium text-gray-900 mb-1">Sin productos</span>
+        Agrega un producto para verlo aquí en tu inventario.
+    </td>
+</tr>
+{% endfor %}

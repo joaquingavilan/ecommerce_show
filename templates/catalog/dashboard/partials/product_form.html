@@ -1,0 +1,119 @@
+<div id="modal-backdrop" class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity z-40"
+    aria-hidden="true" onclick="closeModal()"></div>
+<div id="modal-panel" class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div
+            class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full sm:max-w-2xl border border-gray-100">
+            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 border-b border-gray-100">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                        <h3 class="text-xl font-bold leading-6 text-gray-900 mb-4" id="modal-title">{{ title }}</h3>
+                        <div class="mt-2">
+                            <form id="product-form"
+                                hx-post="{% if product %}{% url 'product_edit' product.pk %}{% else %}{% url 'product_create' %}{% endif %}"
+                                hx-encoding="multipart/form-data" hx-target="#modal-container" class="space-y-4">
+                                {% csrf_token %}
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="block text-sm font-medium text-gray-700">Título</label>
+                                        {{ form.title }}
+                                        {% if form.title.errors %}
+                                        <p class="text-sm text-red-600 mt-1">{{ form.title.errors.0 }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="block text-sm font-medium text-gray-700">Slug (URL)</label>
+                                        {{ form.slug }}
+                                        {% if form.slug.errors %}
+                                        <p class="text-sm text-red-600 mt-1">{{ form.slug.errors.0 }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="block text-sm font-medium text-gray-700">Categoría</label>
+                                        {{ form.category }}
+                                        {% if form.category.errors %}
+                                        <p class="text-sm text-red-600 mt-1">{{ form.category.errors.0 }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="block text-sm font-medium text-gray-700">Precio</label>
+                                        <div class="relative mt-2 rounded-md shadow-sm" x-data="{
+                                                realPrice: '{{ form.price.value|default:'' }}',
+                                                formattedPrice: '{{ form.price.value|default:'' }}' ? new Intl.NumberFormat('es-PY').format('{{ form.price.value|default:'' }}') : '',
+                                                formatPrice() {
+                                                    let num = this.formattedPrice.replace(/\D/g, '');
+                                                    this.realPrice = num;
+                                                    this.formattedPrice = num ? new Intl.NumberFormat('es-PY').format(parseInt(num, 10)) : '';
+                                                }
+                                             }">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <span class="text-gray-500 sm:text-sm">Gs.</span>
+                                            </div>
+                                            <input type="text" x-model="formattedPrice" @input="formatPrice"
+                                                class="block w-full rounded-md border-gray-300 pl-10 focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
+                                                autocomplete="off">
+                                            <input type="hidden" name="price" x-model="realPrice">
+                                        </div>
+                                        {% if form.price.errors %}
+                                        <p class="text-sm text-red-600 mt-1">{{ form.price.errors.0 }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1">
+                                    <label class="block text-sm font-medium text-gray-700">Imágenes</label>
+                                    <input type="file" name="images" multiple accept="image/*"
+                                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                                    <p class="text-xs text-gray-500 mt-1">Puedes seleccionar múltiples archivos a la
+                                        vez.</p>
+                                </div>
+
+                                {% if product %}
+                                <div id="image-gallery" class="pt-2 border-t border-gray-100 mt-4">
+                                    {% include 'catalog/dashboard/partials/product_image_gallery.html' %}
+                                </div>
+                                {% endif %}
+
+                                <div class="space-y-1">
+                                    <label class="block text-sm font-medium text-gray-700">Tallas / Medidas
+                                        (Opcional)</label>
+                                    {{ form.sizes }}
+                                    {% if form.sizes.errors %}
+                                    <p class="text-sm text-red-600 mt-1">{{ form.sizes.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="space-y-1">
+                                    <label class="block text-sm font-medium text-gray-700">Descripción</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                    <p class="text-sm text-red-600 mt-1">{{ form.description.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex items-center space-x-2 pt-2">
+                                    {{ form.available }}
+                                    <label class="text-sm font-medium text-gray-700 cursor-pointer"
+                                        for="{{ form.available.id_for_label }}">Producto Disponible (Visible en
+                                        tienda)</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button type="button" onclick="document.getElementById('product-form').requestSubmit();"
+                    class="inline-flex w-full justify-center rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 sm:ml-3 sm:w-auto transition-colors focus:ring-2 focus:ring-emerald-500 focus:outline-none">Guardar
+                    Producto</button>
+                <button type="button" onclick="closeModal()"
+                    class="mt-3 inline-flex w-full justify-center rounded-lg bg-white px-5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors focus:ring-2 focus:ring-gray-300 focus:outline-none">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

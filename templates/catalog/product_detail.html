@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block header_transparent %}
+<!-- Simple header with back button -->
+<header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="{% url 'store_front' %}" class="flex items-center text-gray-500 hover:text-gray-900 transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver a la Tienda
+        </a>
+
+        <!-- Cart button from original header -->
+        <button
+            onclick="document.getElementById('cart-panel').classList.remove('translate-x-full'); document.getElementById('cart-backdrop').classList.replace('opacity-0', 'opacity-100'); document.getElementById('cart-backdrop').classList.replace('pointer-events-none', 'pointer-events-auto');"
+            class="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none transition-colors group">
+            <span class="absolute -inset-1.5"></span>
+            <span class="sr-only">Ver carrito</span>
+            <svg class="h-6 w-6 group-hover:text-emerald-600 transition-colors" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            {% include 'catalog/partials/cart_count.html' %}
+        </button>
+    </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+
+        <!-- Image Gallery section -->
+        <div class="flex flex-col-reverse relative">
+            <!-- Image list below main image -->
+            {% if product.images.all|length > 1 %}
+            <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
+                <div class="grid grid-cols-4 gap-6" aria-orientation="horizontal" role="tablist">
+                    {% for img in product.images.all %}
+                    <button id="tabs-1-tab-{{ forloop.counter }}"
+                        onclick="document.getElementById('main-img').src='{{ img.image.url }}'"
+                        class="relative flex h-24 cursor-pointer items-center justify-center rounded-lg bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4 overflow-hidden border border-gray-100"
+                        type="button">
+                        <span class="absolute inset-0 overflow-hidden rounded-lg">
+                            <img src="{{ img.image.url }}" alt="Vista {{ forloop.counter }}"
+                                class="h-full w-full object-cover object-center">
+                        </span>
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Main Image -->
+            <div
+                class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-2xl shadow-lg border border-gray-100 bg-gray-50">
+                <img id="main-img" src="{{ product.image_url }}" alt="{{ product.title }}"
+                    class="h-full w-full object-cover object-center">
+            </div>
+        </div>
+
+        <!-- Product info section -->
+        <div class="mt-10 px-4 sm:px-0 lg:mt-0">
+            <p class="text-sm font-medium text-emerald-600 tracking-wide uppercase mb-1">{{ product.category.name }}</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl mb-4">{{ product.title }}</h1>
+
+            <div class="mb-6 flex content-center items-center">
+                <p class="text-3xl font-bold tracking-tight text-gray-900">Gs. {{ product.price|intcomma }}</p>
+            </div>
+
+            <!-- Add to Cart Form -->
+            <form hx-post="{% url 'add_to_cart' product.id %}" hx-swap="none" class="mt-8">
+                {% csrf_token %}
+
+                {% if product.get_sizes_list %}
+                <div class="mt-8 mb-8">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-medium text-gray-900 uppercase tracking-widest">Talla / Medida</h2>
+                    </div>
+
+                    <fieldset class="mt-3">
+                        <div class="flex flex-wrap gap-3">
+                            {% for size in product.get_sizes_list %}
+                            <label
+                                class="group relative flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm font-bold uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 cursor-pointer transition-all shadow-sm">
+                                <input type="radio" name="size" value="{{ size }}" class="sr-only peer" required>
+                                <span class="text-gray-900">{{ size }}</span>
+                                <span
+                                    class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-emerald-600"
+                                    aria-hidden="true"></span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
+                </div>
+                {% endif %}
+
+                <!-- Add Button -->
+                <button type="submit"
+                    onclick="setTimeout(() => { document.getElementById('cart-panel').classList.remove('translate-x-full'); document.getElementById('cart-backdrop').classList.replace('opacity-0', 'opacity-100'); document.getElementById('cart-backdrop').classList.replace('pointer-events-none', 'pointer-events-auto'); }, 300)"
+                    class="flex w-full mt-6 items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white shadow-xl hover:bg-emerald-700 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all transform active:scale-95">
+                    Añadir al Carrito
+                    <svg class="ml-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </button>
+                <div id="toast-message"
+                    class="mt-3 text-center text-sm font-bold text-emerald-600 opacity-0 transition-opacity duration-300">
+                    ¡Añadido al carrito con éxito!
+                </div>
+            </form>
+
+            <div class="mt-10 mb-8 pt-8 border-t border-gray-100">
+                <h3 class="font-bold text-xl text-gray-900 mb-4">Descripción del producto</h3>
+                <div class="prose prose-sm text-gray-600 text-base leading-relaxed">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+
+            <!-- Trust badges/guarantees -->
+            <div class="mt-6 border-t border-gray-100 pt-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-start">
+                        <svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <p class="ml-3 text-sm text-gray-500">Pago seguro al coordinar en WhatsApp</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.body.addEventListener("htmx:afterOnLoad", function (evt) {
+        if (evt.detail.elt.hasAttribute('hx-post') && evt.detail.elt.getAttribute('hx-post').includes('add-to-cart')) {
+            const toast = document.getElementById('toast-message');
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 3000);
+        }
+    });
+</script>
+{% endblock %}

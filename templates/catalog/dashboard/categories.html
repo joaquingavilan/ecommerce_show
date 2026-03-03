@@ -1,0 +1,52 @@
+{% extends "catalog/dashboard/base_dashboard.html" %}
+
+{% block title %}Categorías{% endblock %}
+{% block header %}Gestionar Categorías{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <p class="text-xl text-gray-600 font-medium">Arma tus categorías a tu gusto.</p>
+    <p class="text-sm text-gray-500 mt-1">Facilita la navegación de tus clientes. Una buena estructura de catálogo
+        aumenta las posibilidades de venta directa a tu WhatsApp.</p>
+</div>
+
+<div class="mb-6 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+    <div class="relative w-64">
+        <input type="text" placeholder="Buscar categorías..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow">
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    </div>
+    <button hx-get="{% url 'category_create' %}" hx-target="#modal-container"
+        class="flex items-center space-x-2 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors shadow-sm active:scale-95">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Nueva Categoría</span>
+    </button>
+</div>
+
+<!-- Container for the categories grid (updates on categoryListChanged event) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" hx-get="{% url 'category_list_partial' %}"
+    hx-trigger="categoryListChanged from:body">
+    {% include "catalog/dashboard/partials/category_list_content.html" %}
+</div>
+
+<!-- Empty container for rendering modals on request -->
+<div id="modal-container"></div>
+
+<script>
+    function closeModal() {
+        const container = document.getElementById('modal-container');
+        container.innerHTML = '';
+    }
+
+    // Automatically close the modal when we catch the success event
+    document.body.addEventListener('categoryListChanged', function () {
+        closeModal();
+    });
+</script>
+{% endblock %}

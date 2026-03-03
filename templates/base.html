@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tienda{% endblock %} - Ejemplo Store</title>
+    <!-- Tailwind CSS (CDN for quick setup and premium aesthetics) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5', // Indigo-600
+                        secondary: '#10B981', // Emerald-500
+                        dark: '#111827', // Gray-900
+                        light: '#F3F4F6' // Gray-100
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass {
+                @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+            }
+        }
+    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+        integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.body.addEventListener('htmx:configRequest', (requestEvent) => {
+                requestEvent.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            });
+        });
+    </script>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="bg-light font-sans text-gray-800 antialiased selection:bg-primary selection:text-white pb-20">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 glass mb-8 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center space-x-4">
+                    <a href="{% url 'store_front' %}"
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-400">
+                        Ejemplo<span class="text-dark">Store</span>
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <form method="post" action="{% url 'demo_auto_login' %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                            Ver panel como Admin
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'dashboard_home' %}"
+                        class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-full shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                        Vista de dueño
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Right Side (Cart) -->
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'view_cart' %}"
+                        class="relative text-gray-600 hover:text-primary transition-colors flex items-center group">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 transform group-hover:scale-110 transition-transform" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span id="cart-count-badge"
+                            class="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">
+                            {{ cart_count|default:"0" }}
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12 py-8 text-center text-gray-500 text-sm">
+        <p>&copy; 2026 Ejemplo Store. Construido con Django, HTMX y TailwindCSS.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
